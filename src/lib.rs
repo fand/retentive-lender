@@ -168,7 +168,7 @@ mod tests {
     fn borrow_once_borrow_mut_once() -> Result<(), String> {
         let d = Lender::new(1);
 
-        let b1 = d.borrow("b1")?;
+        let _b1 = d.borrow("b1")?;
         let b2 = d.borrow_mut("b2");
 
         assert!(b2.is_err());
@@ -183,8 +183,8 @@ mod tests {
     fn borrow_twice_borrow_mut_once() -> Result<(), String> {
         let d = Lender::new(1);
 
-        let b1 = d.borrow("b1")?;
-        let b2 = d.borrow("b2")?;
+        let _b1 = d.borrow("b1")?;
+        let _b2 = d.borrow("b2")?;
         let b3 = d.borrow_mut("b3");
 
         assert!(b3.is_err());
@@ -199,7 +199,7 @@ mod tests {
     fn borrow_mut_once_borrow_once() -> Result<(), String> {
         let d = Lender::new(1);
 
-        let b1 = d.borrow_mut("b1")?;
+        let _b1 = d.borrow_mut("b1")?;
         let b2 = d.borrow("b2");
 
         assert!(b2.is_err());
@@ -214,7 +214,7 @@ mod tests {
     fn borrow_mut_twice() -> Result<(), String> {
         let d = Lender::new(1);
 
-        let b1 = d.borrow_mut("b1")?;
+        let _b1 = d.borrow_mut("b1")?;
         let b2 = d.borrow_mut("b2");
 
         assert!(b2.is_err());
@@ -228,9 +228,9 @@ mod tests {
     #[test]
     fn clone_and_borrow_mut() -> Result<(), String> {
         let d = Lender::new(1);
-        let b1 = d.borrow_mut("b1")?;
+        let _b1 = d.borrow_mut("b1")?;
 
-        let d2 = d.clone();
+        let _d2 = d.clone();
         let b2 = d.borrow_mut("b2");
 
         assert!(b2.is_err());
