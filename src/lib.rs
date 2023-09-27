@@ -6,7 +6,7 @@ use std::{
 
 /// Remembers the borrower and removes it when Ref / RefMut is dropped.
 #[derive(Debug)]
-pub struct Dropper {
+struct Dropper {
     borrower: String,
     borrowers: Rc<RefCell<Vec<String>>>,
 }
@@ -91,7 +91,7 @@ impl<'a, T> DerefMut for RefMut<'a, T> {
 }
 
 /// Allow users to borrow / borrow_mut the value while keeping the name of the borrower until it's dropped.
-/// If the value is borrowed twice, it will return an Err containing the name of the previous borrower.
+/// When the borrow / borrow_mut violates the borrow rule, it returns an Err containing the name of the previous borrower.
 #[derive(Debug)]
 pub struct Lender<T> {
     value: Rc<RefCell<T>>,
@@ -99,6 +99,7 @@ pub struct Lender<T> {
 }
 
 impl<T> Lender<T> {
+    /// Creates a new Lender containing value.
     pub fn new(value: T) -> Self {
         Self {
             value: Rc::new(RefCell::new(value)),
@@ -106,6 +107,8 @@ impl<T> Lender<T> {
         }
     }
 
+    /// Immutably borrows the wrapped value, returning an error if the value is currently mutably borrowed.
+    /// The borrow lasts until the returned Ref exits scope. Multiple immutable borrows can be taken out at the same time.
     pub fn borrow(&self, borrower: &str) -> Result<Ref<T>, String> {
         if let Ok(value) = self.value.try_borrow() {
             self.borrowers.borrow_mut().push(borrower.to_string());
@@ -118,6 +121,9 @@ impl<T> Lender<T> {
         }
     }
 
+    /// Mutably borrows the wrapped value, returning an error if the value is currently borrowed.
+    /// The error message includes information of the previous borrower.
+    /// The borrow lasts until the returned RefMut or all RefMuts derived from it exit scope. The value cannot be borrowed while this borrow is active.
     pub fn borrow_mut(&self, borrower: &str) -> Result<RefMut<T>, String> {
         if let Ok(value) = self.value.try_borrow_mut() {
             self.borrowers.borrow_mut().push(borrower.to_string());
