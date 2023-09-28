@@ -4,4 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["AMAGI <mail@amagi.dev>"]
 description = "Dumb container for interior mutability with debug info, works on WebAssembly"
+documentation = "https://docs.rs/retentive-lender/"
+homepage = "https://crates.io/crates/retentive-lender"
+repository = "https://github.com/fand/retentive-lender"
 license = "MIT"
